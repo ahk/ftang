@@ -4,14 +4,15 @@
 var FTANGPlayer = function() { // called inline
   var playlist = [];
   var playItem = 0;
+  var jplayer = $("#jquery_jplayer");
   
   return { // public interface object
   	initJPlayer: function() {
-      $("#jquery_jplayer").jPlayer({ 
+      jplayer.jPlayer({
   			ready: function() { FTANGPlayer.loadPlaylist(true); }, 
   			oggSupport: false
   		})
-      .onProgressChange( function(loadPercent, playedPercentRelative, playedPercentAbsolute, playedTime, totalTime) {
+      .jPlayer('onProgressChange', function(loadPercent, playedPercentRelative, playedPercentAbsolute, playedTime, totalTime) {
         var myPlayedTime = new Date(playedTime);
         var ptMin = (myPlayedTime.getUTCMinutes() < 10) ? "0" + myPlayedTime.getUTCMinutes() : myPlayedTime.getUTCMinutes();
         var ptSec = (myPlayedTime.getUTCSeconds() < 10) ? "0" + myPlayedTime.getUTCSeconds() : myPlayedTime.getUTCSeconds();
@@ -22,10 +23,10 @@ var FTANGPlayer = function() { // called inline
         var ttSec = (myTotalTime.getUTCSeconds() < 10) ? "0" + myTotalTime.getUTCSeconds() : myTotalTime.getUTCSeconds();
         $("#total_time").text(ttMin+":"+ttSec);
       })
-      .onSoundComplete( function() {
+      .jPlayer('onSoundComplete', function() {
         FTANGPlayer.playListNext();
-      })
-  	},
+      });
+    },
 
     loadPlaylist: function(initialLoad) {
       $.getJSON('/playlist/load', function(data) {
@@ -52,13 +53,13 @@ var FTANGPlayer = function() { // called inline
   	  $("#playlist_item_"+index).addClass("playlist_current");
   	  playItem = index;
   		if (playlist != "") {
-  		  $("#jquery_jplayer").setFile(playlist[playItem].mp3, playlist[playItem].ogg);
+  		  jplayer.jPlayer('setFile', playlist[playItem].mp3);
   		}
   	},
 
   	playListChange: function(index) {
   		FTANGPlayer.playListConfig(index);
-  		$("#jquery_jplayer").play();
+  		jplayer.jPlayer('play');
   	},
 
   	playListNext: function() {
