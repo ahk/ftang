@@ -6,11 +6,15 @@ var FTANGPlayer = function() { // called inline
   var playItem = 0;
   var jplayer = $("#jquery_jplayer");
   
-  return { // public interface object
+  var public_methods = { // public interface object
   	initJPlayer: function() {
       jplayer.jPlayer({
   			ready: function() { FTANGPlayer.loadPlaylist(true); }, 
-  			oggSupport: false
+  			oggSupport: false,
+  			swfPath: 'js',
+  			errorAlerts: true,
+  			warningAlerts: true,
+  			nativeSupport: false
   		})
       .jPlayer('onProgressChange', function(loadPercent, playedPercentRelative, playedPercentAbsolute, playedTime, totalTime) {
         var myPlayedTime = new Date(playedTime);
@@ -113,6 +117,8 @@ var FTANGPlayer = function() { // called inline
       }
     }
   };
+
+  return public_methods;
 }();
 
 // page loady one time stuff, lots of default event handling
