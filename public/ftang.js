@@ -1,5 +1,5 @@
 // documentation for this version of jplayer: http://www.happyworm.com/jquery/jplayer/0.2.5/developer-guide.htm
-
+$(function() {
 // controls for the player and the playlist
 var FTANGPlayer = function() { // called inline
   var playlist = [];
@@ -12,9 +12,6 @@ var FTANGPlayer = function() { // called inline
   			ready: function() { FTANGPlayer.loadPlaylist(true); }, 
   			oggSupport: false,
   			swfPath: 'js',
-  			errorAlerts: true,
-  			warningAlerts: true,
-  			nativeSupport: false
   		})
       .jPlayer('onProgressChange', function(loadPercent, playedPercentRelative, playedPercentAbsolute, playedTime, totalTime) {
         var myPlayedTime = new Date(playedTime);
@@ -122,7 +119,7 @@ var FTANGPlayer = function() { // called inline
 }();
 
 // page loady one time stuff, lots of default event handling
-$(function() {
+
   function loadArtists() {
     $.get( '/artists', function(data) {
       $('#content').html(data);
