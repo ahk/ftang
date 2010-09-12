@@ -9,11 +9,11 @@
     %title== FTANG!
     %link{:rel => "stylesheet", :type => "text/css", :href => "style.css"}
     %link{:rel => "stylesheet", :type => "text/css", :href => "jplayer.css"}
-    %script{:type => "text/javascript", :src => "jquery-1.3.2.min.js"}
+    %script{:type => "text/javascript", :src => "jquery-1.4.2.min.js"}
     %script{:type => "text/javascript", :src => "jqueryhoverIntent.js" }
     %script{:type => "text/javascript", :src => "jquery.listnav-2.0.js"}
     %script{:type => "text/javascript", :src => "http://www.google-analytics.com/urchin.js"}
-    %script{:type => "text/javascript", :src => "jquery.jplayer.js"}
+    %script{:type => "text/javascript", :src => "jquery.jplayer.min.js"}
     %script{:type => "text/javascript", :src => "ftang.js"}
 
   %body
@@ -33,15 +33,15 @@
       #jquery_jplayer
       #player_container
         %ul#player_controls
-          %li#player_play
+          %li#jplayer_play
             play
-          %li#player_pause
+          %li#jplayer_pause
             pause
-          %li#player_stop
+          %li#jplayer_stop
             stop
-          %li#player_volume_min
+          %li#jplayer_volume_min
             min volume
-          %li#player_volume_max
+          %li#jplayer_volume_max
             max volume
           %li#ctrl_prev
             previous
@@ -50,10 +50,10 @@
         #play_time
         #total_time
         #player_progress
-          #player_progress_load_bar
-            #player_progress_play_bar
-        #player_volume_bar
-          #player_volume_bar_value
+          #jplayer_load_bar
+            #jplayer_play_bar
+        #jplayer_volume_bar
+          #jplayer_volume_bar_value
     #content
     #playlist
       #playlist_list

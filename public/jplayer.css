@@ -13,7 +13,7 @@
     overflow: hidden;
     text-indent: -9999px; }
 
-#player_play, #player_pause {
+#jplayer_play, #jplayer_pause {
   display: block;
   position: absolute;
   left: 48px;
@@ -22,14 +22,14 @@
   height: 40px;
   cursor: pointer; }
 
-#player_play {
+#jplayer_play {
   background: url("images/sprites.png") 0 0 no-repeat; }
-  #player_play.jqjp_hover {
+  #jplayer_play.jqjp_hover {
     background: url("images/sprites.png") -41px 0 no-repeat; }
 
-#player_pause {
+#jplayer_pause {
   background: url("images/sprites.png") 0 -42px no-repeat; }
-  #player_pause.jqjp_hover {
+  #jplayer_pause.jqjp_hover {
     background: url("images/sprites.png") -41px -42px no-repeat; }
 
 #ctrl_prev {
@@ -60,7 +60,7 @@
     background: url("images/sprites.png") -58px -141px no-repeat;
     cursor: default; }
 
-#player_stop {
+#jplayer_stop {
   position: absolute;
   left: 126px;
   top: 26px;
@@ -68,31 +68,31 @@
   width: 28px;
   height: 28px;
   cursor: pointer; }
-  #player_stop.jqjp_hover {
+  #jplayer_stop.jqjp_hover {
     background: url("images/sprites.png") -29px -83px no-repeat; }
 
 #player_progress {
   position: absolute;
   left: 164px;
   top: 32px;
-  background-color: #eee;
+  background-color: #eeeeee;
   width: 122px;
   height: 15px; }
 
-#player_progress_load_bar {
-  background: url("images/bar_load.gif")  top left repeat-x;
+#jplayer_load_bar {
+  background: url("images/bar_load.gif") top left repeat-x;
   width: 0px;
   height: 15px;
   cursor: pointer; }
-  #player_progress_load_bar.jqjp_buffer {
-    background: url("images/bar_buffer.gif")  top left repeat-x; }
+  #jplayer_load_bar.jqjp_buffer {
+    background: url("images/bar_buffer.gif") top left repeat-x; }
 
-#player_progress_play_bar {
+#jplayer_play_bar {
   background: url("images/bar_play.gif") top left repeat-x;
   width: 0px;
   height: 15px; }
 
-#player_volume_min {
+#jplayer_volume_min {
   position: absolute;
   left: 296px;
   top: 32px;
@@ -101,7 +101,7 @@
   height: 15px;
   cursor: pointer; }
 
-#player_volume_max {
+#jplayer_volume_max {
   position: absolute;
   left: 368px;
   top: 32px;
@@ -110,13 +110,13 @@
   height: 15px;
   cursor: pointer; }
 
-#player_volume_min.jqjp_hover {
+#jplayer_volume_min.jqjp_hover {
   background: url("images/sprites.png") -19px -170px no-repeat; }
 
-#player_volume_max.jqjp_hover {
+#jplayer_volume_max.jqjp_hover {
   background: url("images/sprites.png") -19px -186px no-repeat; }
 
-#player_volume_bar {
+#jplayer_volume_bar {
   position: absolute;
   left: 314px;
   top: 37px;
@@ -125,7 +125,7 @@
   height: 5px;
   cursor: pointer; }
 
-#player_volume_bar_value {
+#jplayer_volume_bar_value {
   background: url("images/volume_bar_value.gif") repeat-x top left;
   width: 0px;
   height: 5px; }
@@ -135,7 +135,7 @@
   left: 164px;
   top: 49px;
   width: 122px;
-  font-size: .8em;
+  font-size: 0.8em;
   font-style: oblique; }
 
 #total_time {
@@ -143,7 +143,7 @@
   left: 164px;
   top: 49px;
   width: 122px;
-  font-size: .8em;
+  font-size: 0.8em;
   font-style: oblique;
   text-align: right; }
 
@@ -158,10 +158,10 @@
     padding: 10px 20px 20px 20px;
     margin: 0 0 10px 0;
     border-top: none;
-    font-size: .9em; }
+    font-size: 0.9em; }
   #playlist_list li {
     padding: 4px 0 4px 20px;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid #eeeeee;
     cursor: pointer; }
     #playlist_list li.playlist_current {
       color: #0d88c1;
