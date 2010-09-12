@@ -1,3 +1,8 @@
+require 'logger'
+
+require 'rubygems'
+require 'bundler/setup'
+
 require 'rack'
 require 'sinatra'
 require 'pow'
@@ -7,7 +12,6 @@ require 'ftang'
 require 'cgi'
 require 'sass/plugin/rack'
 require 'json'
-require 'logger'
 
 use Sass::Plugin::Rack
 Sass::Plugin.options[:css_location] = "./public" 
