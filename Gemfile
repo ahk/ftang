@@ -8,7 +8,7 @@ gem "haml"
 gem "json"
 gem 'unicorn'
 
-gem "music-cache", :git => 'git://github.com/gzuki/Music-Cache.git'
+gem "music-cache", :git => 'git://github.com:gzuki/music-cache.git'
 
 # messed up gemspec dependencies for music-cache
 gem 'ruby-mp3info',
