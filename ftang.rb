@@ -4,10 +4,7 @@ get '/' do
 end
 
 get '/artists' do
-  @artists = []
-  Pow(base_dir).directories.each do |artist| 
-    @artists << artist.name
-  end
+  @artists = mc_db.get_artists(mc_collection)
   @artists.sort!
   partial :artists, :locals => {:artists => @artists}
 end
@@ -16,10 +13,8 @@ get %r{/play/([^/]+)} do
   capture :artist
   
   @albums_covers = {}
-  Pow("#{base_dir}/#{@artist}/").directories.each do |album|
-    cover = get_cover(@artist, album.name)
-    cover ||= "missing"
-    @albums_covers.merge!({"#{album.name}" => cover})
+  mc_db.get_albums(mc_collection, @artist).each do |album|
+    @albums_covers.merge!({"#{album}" => "missing"})
   end
   
   @albums_covers = @albums_covers.sort {|a,b| a[1]<=>b[1]}
@@ -29,18 +24,17 @@ end
 get %r{/playlist/add/([^/]+)/([^/]+)} do
   capture :artist, :album
   p "artist: #{@artist}, album: #{@album}"
-  @songs = []
-  Pow("#{base_dir}/#{@artist}/#{@album}/").files.each do |song|
-    unless song.name =~ NOT_A_SONG
-      @songs << { 
-        "name" => "#{CGI.unescape(song.name)}",
-        "mp3" => "/#{MUSIC_DIR}/#{@artist}/#{@album}/#{song.name}"
-      }
-    end
+  @songs = mc_db.get_tracks(mc_collection, @artist, @album).map do |track_path|
+    tags = mc_db.get_tags(mc_collection, @artist, @album, track_path)
+    { 
+      "name" => tags['title'],
+      "mp3" => get_relative_path(track_path)
+    }
   end
-  @songs = @songs.sort{|a,b| a["name"]<=>b["name"]}
+
+  @songs = @songs.sort{|a,b| a["name"] <=> b["name"]}
   @songs.each {|song| session[:playlist] << song}
-  p "sweet beans"
+  @songs.to_json
 end
 
 get %r{/playlist/remove/([^/]+)} do

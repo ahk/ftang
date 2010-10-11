@@ -1,8 +1,7 @@
-require 'logger'
-
 require 'rubygems'
 require 'bundler/setup'
 
+require 'logger'
 require 'rack'
 require 'sinatra'
 require 'pow'

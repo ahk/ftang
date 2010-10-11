@@ -1,19 +1,44 @@
+GIT
+  remote: git://github.com/gzuki/Music-Cache.git
+  revision: 81e9558c5bf28410ca33595d21b161f2ed494a8a
+  specs:
+    music-cache (0.0.1)
+
+GIT
+  remote: git://github.com/gzuki/ruby-mp3info.git
+  revision: 8f8e7a553009e84f6a3fd2fe790f63554302dfd3
+  specs:
+    ruby-mp3info (0.6.13)
+
 GEM
   remote: http://rubygems.org/
   specs:
-    haml (3.0.18)
+    SystemTimer (1.2)
+    haml (3.0.21)
     json (1.4.6)
     pow (0.2.3)
     rack (1.2.1)
+    rack-environment (1.2.0)
+    redis (2.0.10)
     sinatra (1.0)
       rack (>= 1.0)
+    unicode (0.3.1)
+    unicorn (1.1.4)
+      rack
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
+  SystemTimer
   haml
   json
+  music-cache!
   pow
   rack
+  rack-environment
+  redis
+  ruby-mp3info!
   sinatra
+  unicode
+  unicorn

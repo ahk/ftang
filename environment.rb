@@ -1,3 +1,4 @@
+require 'music-cache'
 use Rack::Session::Cookie
 
 MUSIC_DIR = "music"
@@ -7,6 +8,7 @@ configure do
   set :views, "#{File.dirname(__FILE__)}/views"
   set :sessions, true
   LOGGER = Logger.new("log/sinatra.log") 
+  DATABASE = MusicCache::Database.new
 end
 
 helpers do
@@ -35,6 +37,18 @@ helpers do
     args.each_with_index do |arg, i|
       instance_variable_set("@#{arg}".to_sym, params[:captures][i])
     end
+  end
+  
+  def mc_db
+    DATABASE
+  end
+  
+  def mc_collection
+    'test'
+  end
+  
+  def get_relative_path(path)
+    path.gsub('/Users/andrew/Music/iTunes/iTunes Music/', '/music/')
   end
 end
 
