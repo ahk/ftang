@@ -1,6 +1,7 @@
 require 'music-cache'
 use Rack::Session::Cookie
 
+# I suggest symlinking
 MUSIC_DIR = "music"
 NOT_A_SONG = /.jpe?g|.png|.gif|.DS_Store/i
 

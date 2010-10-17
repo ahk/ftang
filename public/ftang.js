@@ -55,6 +55,11 @@ $(function() {
       },
 
       playListConfig: function(index) {
+        if (null == index) {
+          jplayer.jPlayer('setFile', null);
+          $("playlist_current").removeClass("playlist_current");
+          return
+        }
         $("#playlist_item_"+playItem).removeClass("playlist_current");
         $("#playlist_item_"+index).addClass("playlist_current");
         playItem = index;
@@ -63,6 +68,7 @@ $(function() {
       },
 
       playListChange: function(index) {
+        jplayer.jPlayer('pause');
         FTANGPlayer.playListConfig(index);
         jplayer.jPlayer('play');
       },
@@ -78,20 +84,45 @@ $(function() {
       },
 
       playListRemove: function(songIndex) {
-        $.get('/playlist/delete/'+songIndex);
-        $("#playlist_item_"+songIndex).remove();
-        $("#playlist_remove_item_"+songIndex).remove();
-        playlist.splice(songIndex, 1);
-
-        if(playitem > songIndex) {
-          playitem--;
+        function removeItem () {
+          $("#playlist_item_"+songIndex).remove();
+          $("#playlist_remove_item_"+songIndex).remove();
+          playlist.splice(songIndex, 1);
         }
 
+        if (playItem == songIndex) {
+          jplayer.jPlayer('pause');
+          var nextTrack;
+          if (playItem == playlist.length-1) {
+            nextTrack = playItem - 1;
+          } else {
+            nextTrack = songIndex + 1;
+          }
+
+          // we may be the last song, and have no song left to set up
+          if (!playlist[nextTrack]) {
+            nextTrack = null;
+          }
+          FTANGPlayer.playListConfig(nextTrack);
+        }
+  
+        if(playItem > songIndex) {
+          playItem--;
+        }
+
+        removeItem();
         for(var i = songIndex + 1; i <= playlist.length; i++) {
-          $("#playlist_item_"+i).data( "index", i-1)
-            .attr( 'id', "playlist_item_"+(i-1) );
+          var songEl = $("#playlist_item_"+i)
+          songEl.data( "index", i-1)
+            songEl.attr( 'id', "playlist_item_"+(i-1) );
           $("#playlist_remove_item_"+i).attr( 'id', "playlist_remove_item_"+(i-1) );
+          if(i == playItem) {
+            songEl.addClass("playlist_current");
+          }
         }
+
+        $.get('/playlist/delete/'+songIndex);
+
       },
 
       showPlayList: function() {
@@ -100,10 +131,12 @@ $(function() {
       },
       
       clearPlaylist: function() {
-        $('#playlist_list ul').empty();
+        jplayer.jPlayer('pause');
+        FTANGPlayer.hidePlaylist();
         $.get('/playlist/clear', function(){
           playlist = [];
-          FTANGPlayer.hidePlaylist();
+          playItem = 0;
+          $('#playlist_list ul').empty();
         });
       },
     
@@ -169,7 +202,7 @@ $(function() {
   	FTANGPlayer.playListChange(index);
   });
   
-  $(".playlist_remove").live("click", function() {
+  $(".playlist_remove").live("click", function(e) {
     var index = $(this).parent().data("index");
     FTANGPlayer.playListRemove(index);
     return false;
