@@ -55,19 +55,3 @@ get '/session/clear' do
   reset_session
 end
 
-get '/allcovers' do
-  @artists = []
-  @covers = {}
-  Pow(base_dir).directories.each do |artist|
-    albums = []
-    artist.directories.each do |album|
-      cover = get_cover(artist.name, album.name)
-      if cover
-        albums << album.name
-        @covers.merge!({album.name => cover})
-      end
-    end
-    @artists << {"name" => artist.name, "albums" => albums} unless albums.empty?
-  end
-  haml :all
-end
