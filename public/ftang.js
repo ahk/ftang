@@ -30,13 +30,11 @@ $(function() {
         });
       },
 
-      loadPlaylist: function(initialLoad) {
+      loadPlaylist: function(updatePlayingFile) {
         $.getJSON('/playlist/load', function(data) {
           playlist = data || [];
+          if(playlist.length && updatePlayingFile) FTANGPlayer.playListConfig(playItem);
           FTANGPlayer.renderPlayList();
-          if (initialLoad) {
-            FTANGPlayer.playListConfig(playItem);
-          }
         });
       },
     
@@ -136,6 +134,7 @@ $(function() {
         $.get('/playlist/clear', function(){
           playlist = [];
           playItem = 0;
+          FTANGPlayer.playListConfig(null);
           $('#playlist_list ul').empty();
         });
       },
@@ -209,13 +208,14 @@ $(function() {
   });
   
   $(".add_album_to_playlist").live("click", function(e) {
-    e.preventDefault();
     var cover = $(this).parents().filter(':first');
     var img = $(cover).find('img');
     var album = $(img).attr('album');
     var artist = $(img).attr('artist');
     $.get('/playlist/add/' + artist + '/' + album, function() {
-      FTANGPlayer.loadPlaylist(false);
+      // don't reload the file in the player if we already have some
+      reloadFile = playlist.length ? false : true;
+      FTANGPlayer.loadPlaylist(reloadFile);
       FTANGPlayer.showPlayList();
     });
   });
