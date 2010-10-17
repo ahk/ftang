@@ -1,5 +1,5 @@
 GIT
-  remote: git://github.com/gzuki/Music-Cache.git
+  remote: git://github.com/gzuki/music-cache.git
   revision: 81e9558c5bf28410ca33595d21b161f2ed494a8a
   specs:
     music-cache (0.0.1)

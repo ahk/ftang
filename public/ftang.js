@@ -1,122 +1,128 @@
 // documentation for this version of jplayer: http://www.happyworm.com/jquery/jplayer/0.2.5/developer-guide.htm
 $(function() {
 // controls for the player and the playlist
-var FTANGPlayer = function() { // called inline
-  var playlist = [];
-  var playItem = 0;
-  var jplayer = $("#jquery_jplayer");
-  
-  var public_methods = { // public interface object
-  	initJPlayer: function() {
-      jplayer.jPlayer({
-  			ready: function() { FTANGPlayer.loadPlaylist(true); }, 
-  			oggSupport: false,
-  			swfPath: 'js',
-  		})
-      .jPlayer('onProgressChange', function(loadPercent, playedPercentRelative, playedPercentAbsolute, playedTime, totalTime) {
-        var myPlayedTime = new Date(playedTime);
-        var ptMin = (myPlayedTime.getUTCMinutes() < 10) ? "0" + myPlayedTime.getUTCMinutes() : myPlayedTime.getUTCMinutes();
-        var ptSec = (myPlayedTime.getUTCSeconds() < 10) ? "0" + myPlayedTime.getUTCSeconds() : myPlayedTime.getUTCSeconds();
-        $("#play_time").text(ptMin+":"+ptSec);
-
-        var myTotalTime = new Date(totalTime);
-        var ttMin = (myTotalTime.getUTCMinutes() < 10) ? "0" + myTotalTime.getUTCMinutes() : myTotalTime.getUTCMinutes();
-        var ttSec = (myTotalTime.getUTCSeconds() < 10) ? "0" + myTotalTime.getUTCSeconds() : myTotalTime.getUTCSeconds();
-        $("#total_time").text(ttMin+":"+ttSec);
-      })
-      .jPlayer('onSoundComplete', function() {
-        FTANGPlayer.playListNext();
-      });
-    },
-
-    loadPlaylist: function(initialLoad) {
-      $.getJSON('/playlist/load', function(data) {
-        playlist = data;
-  			FTANGPlayer.displayPlayList();
-				if (initialLoad) {
-					FTANGPlayer.playListConfig(playItem);
-				}
-      });
-    },
-  
-  	displayPlayList: function() {
-  		$('#playlist_list ul').empty();
-  	  for (i=0; i < playlist.length; i++) {
-  	    $("#playlist_list ul").append("<li id='playlist_item_" + i + "'>" + playlist[i].name + "</li>");
-  	    $("#playlist_item_"+i).data( "index", i )
-  	      .append("<span class='playlist_remove'>rm</span>");
-  	  }
-  	  $("#playlist_item_"+playItem).addClass("playlist_current");
-  	},
-
-  	playListConfig: function(index) {
-  	  $("#playlist_item_"+playItem).removeClass("playlist_current");
-  	  $("#playlist_item_"+index).addClass("playlist_current");
-  	  playItem = index;
-  		if (playlist != "") {
-  		  jplayer.jPlayer('setFile', playlist[playItem].mp3);
-  		}
-  	},
-
-  	playListChange: function(index) {
-  		FTANGPlayer.playListConfig(index);
-  		jplayer.jPlayer('play');
-  	},
-
-  	playListNext: function() {
-  		var index = (playItem+1 < playlist.length) ? playItem+1 : 0;
-  		FTANGPlayer.playListChange(index);
-  	},
-
-  	playListPrev: function() {
-  		var index = (playItem-1 >= 0) ? playItem-1 : playlist.length-1;
-  		FTANGPlayer.playListChange(index);
-  	},
-
-  	playListRemove: function(song) {
-  	  $.get('/playlist/remove/'+song);
-  	  $("#playlist_item_"+song).remove();
-  	  $("#playlist_remove_item_"+song).remove();
-  	  for(var i = song + 1; i < $(playlist).size(); i++) {
-  	    $("#playlist_item_"+i).data( "index", i-1)
-          .attr( 'id', "playlist_item_"+(i-1) );
-  	    $("#playlist_remove_item_"+i).attr( 'id', "playlist_remove_item_"+(i-1) );
-  	  }
-  	  playlist.splice(song, 1);
-  	  if(playItem > song) {
-  	    playItem--;
-  	  }
-  	},
-
-    showPlaylist: function() {
-      $('#content').css('width', '80%');
-      $('#playlist').show();
-    },
+  var FTANGPlayer = function() { // called inline
     
-    clearPlaylist: function() {
-      $('#playlist_list ul').empty();
-      $.get('/playlist/clear', function(){
-  			playlist = [];
-        FTANGPlayer.hidePlaylist();
-      });
-    },
-  
-    hidePlaylist: function() {
-      $('#content').css('width', '100%');
-      $('#playlist').hide();
-    },
-  
-    togglePlaylistVisibility: function() {
-      if( $('#playlist').is(":hidden") == true ) {
-        FTANGPlayer.showPlaylist();
-      } else {
-        FTANGPlayer.hidePlaylist();
-      }
-    }
-  };
+    var playlist = [];
+    var playItem = 0;
+    var jplayer = $("#jquery_jplayer");
+    
+    var public_methods = { // public interface object
+      initJPlayer: function() {
+        jplayer.jPlayer({
+          ready: function() { FTANGPlayer.loadPlaylist(true); }, 
+          oggSupport: false,
+          swfPath: 'js',
+        })
+        .jPlayer('onProgressChange', function(loadPercent, playedPercentRelative, playedPercentAbsolute, playedTime, totalTime) {
+          var myPlayedTime = new Date(playedTime);
+          var ptMin = (myPlayedTime.getUTCMinutes() < 10) ? "0" + myPlayedTime.getUTCMinutes() : myPlayedTime.getUTCMinutes();
+          var ptSec = (myPlayedTime.getUTCSeconds() < 10) ? "0" + myPlayedTime.getUTCSeconds() : myPlayedTime.getUTCSeconds();
+          $("#play_time").text(ptMin+":"+ptSec);
 
-  return public_methods;
-}();
+          var myTotalTime = new Date(totalTime);
+          var ttMin = (myTotalTime.getUTCMinutes() < 10) ? "0" + myTotalTime.getUTCMinutes() : myTotalTime.getUTCMinutes();
+          var ttSec = (myTotalTime.getUTCSeconds() < 10) ? "0" + myTotalTime.getUTCSeconds() : myTotalTime.getUTCSeconds();
+          $("#total_time").text(ttMin+":"+ttSec);
+        })
+        .jPlayer('onSoundComplete', function() {
+          FTANGPlayer.playListNext();
+        });
+      },
+
+      loadPlaylist: function(initialLoad) {
+        $.getJSON('/playlist/load', function(data) {
+          playlist = data || [];
+          FTANGPlayer.renderPlayList();
+          if (initialLoad) {
+            FTANGPlayer.playListConfig(playItem);
+          }
+        });
+      },
+    
+      renderPlayList: function() {
+        $('#playlist_list ul').empty();
+        for (i=0; i < playlist.length; i++) {
+          var song = playlist[i];
+          $("#playlist_list ul").append(
+            "<li id='playlist_item_" + i + "'>" + 
+            '<span class="tracknum">' + song.tracknum  + '</span> : ' +
+            song.name + "</li>");
+          $("#playlist_item_"+i).data( "index", i )
+            .append("<span class='playlist_remove'>rm</span>");
+        }
+        $("#playlist_item_"+playItem).addClass("playlist_current");
+      },
+
+      playListConfig: function(index) {
+        $("#playlist_item_"+playItem).removeClass("playlist_current");
+        $("#playlist_item_"+index).addClass("playlist_current");
+        playItem = index;
+        
+        jplayer.jPlayer('setFile', playlist[playItem].mp3);
+      },
+
+      playListChange: function(index) {
+        FTANGPlayer.playListConfig(index);
+        jplayer.jPlayer('play');
+      },
+
+      playListNext: function() {
+        var index = (playItem+1 < playlist.length) ? playItem+1 : 0;
+        FTANGPlayer.playListChange(index);
+      },
+
+      playListPrev: function() {
+        var index = (playItem-1 >= 0) ? playItem-1 : playlist.length-1;
+        FTANGPlayer.playListChange(index);
+      },
+
+      playListRemove: function(songIndex) {
+        $.get('/playlist/delete/'+songIndex);
+        $("#playlist_item_"+songIndex).remove();
+        $("#playlist_remove_item_"+songIndex).remove();
+        playlist.splice(songIndex, 1);
+
+        if(playitem > songIndex) {
+          playitem--;
+        }
+
+        for(var i = songIndex + 1; i <= playlist.length; i++) {
+          $("#playlist_item_"+i).data( "index", i-1)
+            .attr( 'id', "playlist_item_"+(i-1) );
+          $("#playlist_remove_item_"+i).attr( 'id', "playlist_remove_item_"+(i-1) );
+        }
+      },
+
+      showPlayList: function() {
+        $('#content').css('width', '80%');
+        $('#playlist').show();
+      },
+      
+      clearPlaylist: function() {
+        $('#playlist_list ul').empty();
+        $.get('/playlist/clear', function(){
+          playlist = [];
+          FTANGPlayer.hidePlaylist();
+        });
+      },
+    
+      hidePlaylist: function() {
+        $('#content').css('width', '100%');
+        $('#playlist').hide();
+      },
+    
+      togglePlaylistVisibility: function() {
+        if( $('#playlist').is(":hidden") == true ) {
+          FTANGPlayer.showPlayList();
+        } else {
+          FTANGPlayer.hidePlaylist();
+        }
+      }
+    };
+
+    return public_methods;
+  }();
 
 // page loady one time stuff, lots of default event handling
 
@@ -146,16 +152,14 @@ var FTANGPlayer = function() { // called inline
     $(cover).unbind();
   }
   
-  $('#playlist_list li').live("mouseover",
-    function() {
+  $('#playlist_list li').live("mouseover", function() {
       if (FTANGPlayer.playItem != $(this).data("index")) {
         $(this).addClass("playlist_hover");
       }
     }
   );
   
-  $('#playlist_list li').live("mouseout",
-    function() {
+  $('#playlist_list li').live("mouseout", function() {
       $(this).removeClass("playlist_hover");
     }
   );
@@ -179,7 +183,7 @@ var FTANGPlayer = function() { // called inline
     var artist = $(img).attr('artist');
     $.get('/playlist/add/' + artist + '/' + album, function() {
       FTANGPlayer.loadPlaylist(false);
-      FTANGPlayer.showPlaylist();
+      FTANGPlayer.showPlayList();
     });
   });
 
@@ -209,11 +213,11 @@ var FTANGPlayer = function() { // called inline
   });
   
   $('#playlist_list ul li').live("mouseover", function() {
-    $(this).find("span").filter(":first").show();
-  })
+    $(this).find("span.playlist_remove").show();
+  });
   
   $('#playlist_list ul li').live("mouseout", function() {
-    $(this).find("span").filter(":first").hide();
+    $(this).find("span.playlist_remove").hide();
   });
   
   $('#toggle_playlist').live('click', function() {
@@ -234,8 +238,4 @@ var FTANGPlayer = function() { // called inline
   FTANGPlayer.initJPlayer();
   FTANGPlayer.hidePlaylist();
 
-  try { //google analytics
-  _uacct = "UA-9156272-1";
-  urchinTracker();
-  } catch(err) {}
 });

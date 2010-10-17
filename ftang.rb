@@ -28,16 +28,16 @@ get %r{/playlist/add/([^/]+)/([^/]+)} do
     tags = mc_db.get_tags(mc_collection, @artist, @album, track_path)
     { 
       "name" => tags['title'],
-      "mp3" => get_relative_path(track_path)
+      "mp3" => get_relative_path(track_path),
+      "tracknum" => tags['tracknum'] || 0
     }
   end
-
-  @songs = @songs.sort{|a,b| a["name"] <=> b["name"]}
+  @songs = @songs.sort_by { |song| song['tracknum'].to_i }
   @songs.each {|song| session[:playlist] << song}
   @songs.to_json
 end
 
-get %r{/playlist/remove/([^/]+)} do
+get %r{/playlist/delete/([^/]+)} do
   capture :song
   session[:playlist].delete_at(@song.to_i)
 end
