@@ -3,14 +3,13 @@ require 'json'
 require 'cgi'
 
 class FTANG < Sinatra::Base
-  puts 'larry'
   get '/' do
     session[:playlist] ||= []
     haml :base
   end
 
   get '/artists' do
-    @artists = mc_db.get_artists(mc_collection)
+    @artists = database.get_artists(settings.collection_name)
     @artists.sort!
     partial :artists, :locals => {:artists => @artists}
   end
@@ -19,7 +18,7 @@ class FTANG < Sinatra::Base
     capture :artist
     
     @albums_covers = {}
-    mc_db.get_albums(mc_collection, @artist).each do |album|
+    database.get_albums(settings.collection_name, @artist).each do |album|
       @albums_covers.merge!({"#{album}" => "missing"})
     end
     
@@ -30,8 +29,8 @@ class FTANG < Sinatra::Base
   get %r{/playlist/add/([^/]+)/([^/]+)} do
     capture :artist, :album
     p "artist: #{@artist}, album: #{@album}"
-    @songs = mc_db.get_tracks(mc_collection, @artist, @album).map do |track_path|
-      tags = mc_db.get_tags(mc_collection, @artist, @album, track_path)
+    @songs = database.get_tracks(settings.collection_name, @artist, @album).map do |track_path|
+      tags = database.get_tags(settings.collection_name, @artist, @album, track_path)
       { 
         "name" => tags['title'],
         "mp3" => get_relative_path(track_path),
@@ -44,8 +43,9 @@ class FTANG < Sinatra::Base
   end
 
   get %r{/playlist/delete/([^/]+)} do
-    capture :song
-    session[:playlist].delete_at(@song.to_i)
+    capture :song_index
+    session[:playlist].delete_at(@song_index.to_i)
+    200
   end
 
   get '/playlist/load' do
@@ -55,9 +55,11 @@ class FTANG < Sinatra::Base
 
   get '/playlist/clear' do
     session[:playlist] = []
+    200
   end
 
   get '/session/clear' do
     reset_session
+    200
   end
 end

@@ -10,22 +10,23 @@ class FTANG < Sinatra::Base
   Sass::Plugin.options[:css_location] = "./public/css" 
   Sass::Plugin.options[:template_location] = "./views"
 
-
   configure do
     set :root, File.dirname(__FILE__)
     set :views, Proc.new { File.join(root, "views") }
     set :public, Proc.new { File.join(root, "public") }
+    set :database, Proc.new { @database ||= MusicCache::Database.new}
+    set :collection_name, 'test'
+    # I suggest symlinking this
+    set :music_dir, Proc.new { File.join(public, 'music')}
     enable :logging
     enable :sessions
-    # I suggest symlinking this
-    MUSIC_DIR = "music"
-    NOT_A_SONG = /.jpe?g|.png|.gif|.DS_Store/i
-    DATABASE = MusicCache::Database.new
   end
 
   helpers do
     
-    def base_dir;"public/#{MUSIC_DIR}";end
+    def database
+      settings.database
+    end
     
     def partial(page, options={})
       haml page, options.merge!(:layout => false)
@@ -36,9 +37,9 @@ class FTANG < Sinatra::Base
     end
     
     def get_cover(artist, album)
-      Pow("#{base_dir}/#{artist}/#{album}").files.each do |file|
+      Pow("#{settings.music_dir}/#{artist}/#{album}").files.each do |file|
         if file.extension =~ /jpe?g|png/i
-          return "/#{MUSIC_DIR}/#{artist}/#{album}/#{file.name}"
+          return file
         end
       end
       nil
@@ -48,14 +49,6 @@ class FTANG < Sinatra::Base
       args.each_with_index do |arg, i|
         instance_variable_set("@#{arg}".to_sym, params[:captures][i])
       end
-    end
-    
-    def mc_db
-      DATABASE
-    end
-    
-    def mc_collection
-      'test'
     end
     
     def get_relative_path(path)
