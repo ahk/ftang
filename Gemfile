@@ -6,8 +6,7 @@ gem 'rack-environment'
 gem "pow"
 gem "haml"
 gem "json"
-gem 'unicorn'
-
+gem "thin"
 gem "music-cache", :git => 'git://github.com/gzuki/music-cache.git'
 
 # messed up gemspec dependencies for music-cache
