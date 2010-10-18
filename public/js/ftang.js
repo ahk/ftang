@@ -267,8 +267,11 @@ $(function() {
     return false;
   });
   
-  loadArtists();
-  FTANGPlayer.initJPlayer();
-  FTANGPlayer.hidePlaylist();
+  // Try to make it feel snappier ...
+  setTimeout(function(){
+    loadArtists();
+    FTANGPlayer.initJPlayer();
+    FTANGPlayer.hidePlaylist();
+  },0);
 
 });
