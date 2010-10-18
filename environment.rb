@@ -8,7 +8,7 @@ require 'sinatra'
 
 use Rack::Session::Cookie
 use Sass::Plugin::Rack
-Sass::Plugin.options[:css_location] = "./public" 
+Sass::Plugin.options[:css_location] = "./public/css" 
 Sass::Plugin.options[:template_location] = "./views"
 
 
