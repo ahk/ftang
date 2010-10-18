@@ -1,3 +1,5 @@
+require 'environment'
+
 get '/' do
   session[:playlist] ||= []
   haml :base

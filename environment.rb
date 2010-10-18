@@ -1,14 +1,24 @@
 require 'music-cache'
-use Rack::Session::Cookie
+require "logger"
+require 'haml'
+require 'cgi'
+require 'sass/plugin/rack'
+require 'json'
+require 'sinatra'
 
-# I suggest symlinking
-MUSIC_DIR = "music"
-NOT_A_SONG = /.jpe?g|.png|.gif|.DS_Store/i
+use Rack::Session::Cookie
+use Sass::Plugin::Rack
+Sass::Plugin.options[:css_location] = "./public" 
+Sass::Plugin.options[:template_location] = "./views"
+
 
 configure do
   set :views, "#{File.dirname(__FILE__)}/views"
   set :sessions, true
-  LOGGER = Logger.new("log/sinatra.log") 
+  # I suggest symlinking this
+  MUSIC_DIR = "music"
+  NOT_A_SONG = /.jpe?g|.png|.gif|.DS_Store/i
+  LOGGER = Logger.new("log/development.log") 
   DATABASE = MusicCache::Database.new
 end
 
