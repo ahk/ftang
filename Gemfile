@@ -8,6 +8,7 @@ gem "haml"
 gem "json"
 gem "thin"
 gem "music-cache", :git => 'git://github.com/gzuki/music-cache.git'
+gem "em-websocket"
 
 # messed up gemspec dependencies for music-cache
 gem 'ruby-mp3info',

@@ -14,7 +14,11 @@ GEM
   remote: http://rubygems.org/
   specs:
     SystemTimer (1.2)
+    addressable (2.2.2)
     daemons (1.1.0)
+    em-websocket (0.1.4)
+      addressable (>= 2.1.1)
+      eventmachine (>= 0.12.9)
     eventmachine (0.12.10)
     haml (3.0.21)
     json (1.4.6)
@@ -35,6 +39,7 @@ PLATFORMS
 
 DEPENDENCIES
   SystemTimer
+  em-websocket
   haml
   json
   music-cache!

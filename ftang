@@ -1,6 +1,31 @@
 #!/usr/bin/env ruby -KU
 require 'rubygems'
 require 'bundler/setup'
+require 'em-websocket'
+require 'thin'
+require 'lib/ftang'
 
-require 'ftang'
-FTANG.run! :host => 'localhost', :port => 8080
+EventMachine.run do     # <-- Changed EM to EventMachine
+
+  EventMachine::WebSocket.start(:host => '0.0.0.0', :port => 8081) do |ws| # <-- Added |ws|
+      # Websocket code here
+      ws.onopen {
+          ws.send "connected!!!!"
+      }
+
+      ws.onmessage { |msg|
+          puts "got message #{msg}"
+      }
+
+      ws.onclose   {
+
+          ws.send "WebSocket closed"
+      }
+
+  end
+
+  # You could also use Rainbows! instead of Thin.
+  # Any EM based Rack handler should do.
+  FTANG.run!({:port => 8080})
+
+end
