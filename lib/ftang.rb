@@ -3,7 +3,27 @@ require 'json'
 require 'cgi'
 
 class FTANG < Sinatra::Base
+
+  get '/socket.io/websocket' do
+    200
+  end
+
   get '/' do
+    #if request.ws?
+        #request.ws_handshake!
+
+        #request.ws_io.each do |record|
+          #ws_io.write_utf8(record)
+          #break if record == "Goodbye"
+        #end
+
+        #begin
+          #request.ws_quit!
+        #rescue
+          #nil
+        #end
+    #end
+    
     session[:playlist] ||= []
     haml :base
   end
@@ -61,5 +81,9 @@ class FTANG < Sinatra::Base
   get '/session/clear' do
     reset_session
     200
+  end
+
+  get '/socketz' do
+    haml :socketz
   end
 end

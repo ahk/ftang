@@ -9,8 +9,13 @@ EventMachine.run do     # <-- Changed EM to EventMachine
 
   EventMachine::WebSocket.start(:host => '0.0.0.0', :port => 8081) do |ws| # <-- Added |ws|
       # Websocket code here
+      #
+      js = %Q(
+          {'jsonp' : function () { console.log('shirtz'); }}
+      )
+
       ws.onopen {
-          ws.send "connected!!!!"
+             ws.send js
       }
 
       ws.onmessage { |msg|
@@ -18,7 +23,7 @@ EventMachine.run do     # <-- Changed EM to EventMachine
       }
 
       ws.onclose   {
-
+          puts 'close'
           ws.send "WebSocket closed"
       }
 
@@ -26,6 +31,6 @@ EventMachine.run do     # <-- Changed EM to EventMachine
 
   # You could also use Rainbows! instead of Thin.
   # Any EM based Rack handler should do.
-  FTANG.run!({:port => 8080})
+  FTANG.run!(:port => 8080)
 
 end
