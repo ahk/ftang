@@ -12,15 +12,15 @@ use Rack::ContentLength
 #end
 run lambda { |env|
   req = Sunshowers::Request.new(env)
-  #if req.ws?
-    #req.ws_handshake!
-    #ws_io = req.ws_io
-    #ws_io.each do |record|
-      #ws_io.write(record)
-      #break if record == "Goodbye"
-    #end
-    #req.ws_quit! # Rainbows! should handle this quietly
-  #end
+  if req.ws?
+    req.ws_handshake!
+    ws_io = req.ws_io
+    ws_io.each do |record|
+      ws_io.write(record)
+      break if record == "Goodbye"
+    end
+    req.ws_quit! # Rainbows! should handle this quietly
+  end
   FTANG.call(env)
 }
 #FTANG.run!(:port => 8080)

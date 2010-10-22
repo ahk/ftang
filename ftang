@@ -2,35 +2,37 @@
 require 'rubygems'
 require 'bundler/setup'
 require 'em-websocket'
-require 'thin'
 require 'lib/ftang'
 
 EventMachine.run do     # <-- Changed EM to EventMachine
 
   EventMachine::WebSocket.start(:host => '0.0.0.0', :port => 8081) do |ws| # <-- Added |ws|
-      # Websocket code here
-      #
-      js = %Q(
-          {'jsonp' : function () { console.log('shirtz'); }}
-      )
+
+      @clients = Ftang::PlaylistPool.new
 
       ws.onopen {
-             ws.send js
+        @clients.add(ws)
       }
 
       ws.onmessage { |msg|
-          puts "got message #{msg}"
+        if 'quit' == msg
+          ws.close_connection
+        else
+          command = Ftang::PlayerCommand.new(ws.request['Cookie'], msg)
+          @clients.broadcast(command)
+        end
       }
 
       ws.onclose   {
-          puts 'close'
-          ws.send "WebSocket closed"
+        @clients.delete(ws)
+        puts 'close'
+        ws.send "WebSocket closed"
       }
 
   end
 
   # You could also use Rainbows! instead of Thin.
   # Any EM based Rack handler should do.
-  FTANG.run!(:port => 8080)
+  Ftang::Server.run!(:port => 8080)
 
 end
