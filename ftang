@@ -4,30 +4,34 @@ require 'bundler/setup'
 require 'em-websocket'
 require 'lib/ftang'
 
-EventMachine.run do     # <-- Changed EM to EventMachine
+EventMachine.run do
+  @channel =  EventMachine::Channel.new
 
-  EventMachine::WebSocket.start(:host => '0.0.0.0', :port => 8081) do |ws| # <-- Added |ws|
+  EventMachine::WebSocket.start(:host => '0.0.0.0', :port => 8081) do |ws|
 
-      @clients = Ftang::PlaylistPool.new
-
-      ws.onopen {
-        @clients.add(ws)
+    # damn kids got their javascript idioms in my ruby!
+    ws.onopen {
+      sid = @channel.subscribe { |msg| 
+        ws.send(msg)
       }
 
       ws.onmessage { |msg|
         if 'quit' == msg
           ws.close_connection
         else
-          command = Ftang::PlayerCommand.new(ws.request['Cookie'], msg)
-          @clients.broadcast(command)
+          command = Ftang::PlayerCommand.new(sid, msg)
+          @channel.push(command.to_json)
         end
       }
 
       ws.onclose   {
-        @clients.delete(ws)
-        puts 'close'
-        ws.send "WebSocket closed"
+        @channel.unsubscribe(sid)
+        puts "closed #{sid}"
       }
+
+      ws.send("hi there #{sid}")
+      @channel.push("hello to #{sid}")
+    }
 
   end
 
