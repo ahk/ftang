@@ -5,6 +5,7 @@ $(function() {
     
     var playlist = [];
     var playItem = 0;
+    var playTimeMillis = 0;
     var jplayer = $("#jquery_jplayer");
     
     var public_methods = { // public interface object
@@ -15,6 +16,7 @@ $(function() {
           swfPath: 'js',
         })
         .jPlayer('onProgressChange', function(loadPercent, playedPercentRelative, playedPercentAbsolute, playedTime, totalTime) {
+          playTimeMillis = Math.ceil(playedTime)
           var myPlayedTime = new Date(playedTime);
           var ptMin = (myPlayedTime.getUTCMinutes() < 10) ? "0" + myPlayedTime.getUTCMinutes() : myPlayedTime.getUTCMinutes();
           var ptSec = (myPlayedTime.getUTCSeconds() < 10) ? "0" + myPlayedTime.getUTCSeconds() : myPlayedTime.getUTCSeconds();
@@ -28,6 +30,10 @@ $(function() {
         .jPlayer('onSoundComplete', function() {
           FTANGPlayer.playListNext();
         });
+      },
+      
+      getjPlayer : function() {
+        return jplayer;
       },
 
       loadPlaylist: function(updatePlayingFile) {
@@ -53,6 +59,7 @@ $(function() {
       },
 
       playListConfig: function(index) {
+
         if (null == index) {
           jplayer.jPlayer('setFile', null);
           $("playlist_current").removeClass("playlist_current");
@@ -65,20 +72,38 @@ $(function() {
         jplayer.jPlayer('setFile', playlist[playItem].mp3);
       },
 
+      play : function(optPlaylistState) {
+        if(optPlaylistState) {
+          FTANGPlayer.updatePlaylist(optPlaylistState);
+        }
+        jplayer.jPlayer('play');
+      },
+
+      pause : function() {
+        jplayer.jPlayer('pause');
+      },
+
       playListChange: function(index) {
+        FTANGPlayer.playListConfig(index);
+      },
+
+      playListChangeAndBroadcast: function(index) {
         jplayer.jPlayer('pause');
         FTANGPlayer.playListConfig(index);
+        FTANGPlayer.broadcastAction('pause')
+        FTANGPlayer.broadcastAction('updatePlaylist')
+        FTANGPlayer.broadcastAction('play')
         jplayer.jPlayer('play');
       },
       
       playListNext: function() {
         var index = (playItem+1 < playlist.length) ? playItem+1 : 0;
-        FTANGPlayer.playListChange(index);
+        FTANGPlayer.playListChangeAndBroadcast(index);
       },
 
       playListPrev: function() {
         var index = (playItem-1 >= 0) ? playItem-1 : playlist.length-1;
-        FTANGPlayer.playListChange(index);
+        FTANGPlayer.playListChangeAndBroadcast(index);
       },
 
       playListRemove: function(songIndex) {
@@ -159,30 +184,36 @@ $(function() {
       setwsClientId : function(id) {
         FTANGPlayer.wsClientId_ = id;
       },
+
+      updatePlaylist : function(playListState) {
+        FTANGPlayer.playListChange(playListState.track);
+        FTANGPlayer.getjPlayer().jPlayer( "playHeadTime", playListState.millis )
+      },
       
       broadcastAction : function(action) { 
-        FTANGPlayer.ws_.send(action);
+        playListState = {
+          data: {
+            track : playItem,
+            millis : playTimeMillis 
+          }
+        };
+        playListState.action = action;
+        FTANGPlayer.ws_.send(JSON.stringify(playListState));
       },
 
-      broadcastAndCommand: function(command) {
-        FTANGPlayer[command]();
-        FTANGPlayer.broadcastAction(command)
-      },
-
-
-      handleWS : function(command) {
-        console.log('gotWS from ' + command.client_id + ':', command)
-        if(command.client_id == 'server') { 
-          FTANGPlayer.setwsClientId(command.command);
+      handleWS : function(message) {
+        if(message.client_id == 'server') { 
+          FTANGPlayer.setwsClientId(message.command);
           return
         }
-        if(command.client_id == 'alert') { 
-          console.log('alert', command.command);
+        if(message.client_id == 'alert') { 
+          console.log('alert', message.command);
           return
         }
-        if(command.client_id != FTANGPlayer.wsClientId_) {
-          console.log(command.command + '()')
-          FTANGPlayer[command.command]();
+        if(message.client_id != FTANGPlayer.wsClientId_) {
+          action = message.command.action
+          data = message.command.data
+          FTANGPlayer[action](data);
         }
       }
     };

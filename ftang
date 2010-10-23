@@ -17,9 +17,10 @@ EventMachine.run do
       }
 
       ws.onmessage { |msg|
-        if 'quit' == msg
+        msg = JSON.parse(msg)
+        if 'quit' == msg['action']
           ws.close_connection
-        elsif 'getClientId' == msg
+        elsif 'getClientId' == msg['action']
           command = Ftang::PlayerCommand.new('server', sid)
           ws.send(command.to_json)
         else

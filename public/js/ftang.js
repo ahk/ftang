@@ -42,7 +42,7 @@ $(function() {
   
   $('#playlist_list li').live("click", function() {
     var index = $(this).data("index");
-  	FTANGPlayer.playListChange(index);
+  	FTANGPlayer.playListChangeAndBroadcast(index);
   });
   
   $(".playlist_remove").live("click", function(e) {
@@ -102,12 +102,12 @@ $(function() {
   });
 
   $("#ctrl_prev").live('click', function() {
-    FTANGPlayer.broadcastAndCommand('playListPrev');
+    FTANGPlayer.playListPrev();
    	return false;
   });
 
   $("#ctrl_next").live('click', function() {
-  	FTANGPlayer.broadcastAndCommand('playListNext');
+  	FTANGPlayer.playListNext();
     return false;
   });
   
@@ -116,6 +116,14 @@ $(function() {
   // Try to make it feel snappier ...
   setTimeout(function(){
     loadArtists();
+    $("#jplayer_play").click(function(){
+      FTANGPlayer.broadcastAction('play')
+    })
+
+    $("#jplayer_pause").click(function(){
+      FTANGPlayer.broadcastAction('pause')
+    })
+    
   },0);
 
 });
