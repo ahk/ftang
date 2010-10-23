@@ -19,6 +19,9 @@ EventMachine.run do
       ws.onmessage { |msg|
         if 'quit' == msg
           ws.close_connection
+        elsif 'getClientId' == msg
+          command = Ftang::PlayerCommand.new('server', sid)
+          ws.send(command.to_json)
         else
           command = Ftang::PlayerCommand.new(sid, msg)
           @channel.push(command.to_json)
@@ -27,11 +30,10 @@ EventMachine.run do
 
       ws.onclose   {
         @channel.unsubscribe(sid)
-        puts "closed #{sid}"
       }
 
-      ws.send("hi there #{sid}")
-      @channel.push("hello to #{sid}")
+      join_command = Ftang::PlayerCommand.new('alert', "client #{sid} joined!")
+      @channel.push(join_command.to_json)
 
     }
 

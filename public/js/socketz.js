@@ -1,32 +1,29 @@
 $(function() {
   var ws;
 
-if ("WebSocket" in window) {
-  console.log("Horray you have web sockets Trying to connect...");
-  ws = new WebSocket("ws://"+ window.location.hostname +":8081");
+  if ("WebSocket" in window) {
+    console.log("Horray you have web sockets Trying to connect...");
+    ws = new WebSocket("ws://"+ window.location.hostname +":8081");
 
-  ws.onopen = function() {
-    // Web Socket is connected. You can send data by send() method.
-    console.log("connected...");
-    ws.send("hello from the browser");
-    ws.send("more from browser");
+    ws.onopen = function() {
+      FTANGPlayer.setWS(ws);
+      FTANGPlayer.broadcastAction('getClientId')
+    };
+
+    ws.onmessage = function (evt)
+    {
+      console.log('incoming: ', evt.data)
+      var data = $.parseJSON(evt.data);
+      FTANGPlayer.handleWS(data);
+    };
+
+    ws.onclose = function()
+    {
+      console.log("ftang socket closed");
+    };
+
+  } else {
+    alert("You FUNDAMENTALLY LACK web sockets");
   };
-
-  ws.onmessage = function (evt)
-  {
-    var data = evt.data;
-    console.log(data);
-  };
-
-  ws.onclose = function()
-  {
-    console.log(" socket closed");
-  };
-
-} else {
-  alert("You have no web sockets");
-};
-
-setInterval(function(){ws.send('ping!')},1000)
 
 });
