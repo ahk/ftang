@@ -11,6 +11,7 @@ EventMachine.run do
 
     # damn kids got their javascript idioms in my ruby!
     ws.onopen {
+
       sid = @channel.subscribe { |msg| 
         ws.send(msg)
       }
@@ -31,6 +32,7 @@ EventMachine.run do
 
       ws.send("hi there #{sid}")
       @channel.push("hello to #{sid}")
+
     }
 
   end
