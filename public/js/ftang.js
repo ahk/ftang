@@ -258,12 +258,12 @@ $(function() {
   });
 
   $("#ctrl_prev").live('click', function() {
-  	FTANGPlayer.playListPrev();
-   	return false;
+    FTANGPlayer.playListPrev();
+    return false;
   });
 
   $("#ctrl_next").live('click', function() {
-  	FTANGPlayer.playListNext();
+    FTANGPlayer.playListNext();
     return false;
   });
   
