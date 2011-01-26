@@ -5,7 +5,7 @@ require 'sinatra/base'
 require 'pow'
 
 class FTANG < Sinatra::Base
-  use Rack::Session::Cookie
+  use Rack::Session::Pool
   use Sass::Plugin::Rack
   Sass::Plugin.options[:css_location] = "./public/css" 
   Sass::Plugin.options[:template_location] = "./views"
@@ -19,7 +19,6 @@ class FTANG < Sinatra::Base
     # I suggest symlinking this
     set :music_dir, Proc.new { File.join(public, 'music')}
     enable :logging
-    enable :sessions
   end
 
   helpers do
@@ -52,7 +51,7 @@ class FTANG < Sinatra::Base
     end
     
     def get_relative_path(path)
-      path.gsub('/Users/andrew/Music/iTunes/iTunes Music/', '/music/')
+      path.gsub('/Users/revelation/Music/iTunes/iTunes Media/Music', 'music')
     end
   end
 
