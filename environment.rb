@@ -51,7 +51,7 @@ class FTANG < Sinatra::Base
     end
     
     def get_relative_path(path)
-      path.gsub('/Users/revelation/Music/iTunes/iTunes Media/Music', 'music')
+      path.gsub('/Users/andrew/Music/iTunes/iTunes Media/Music', 'music')
     end
   end
 
