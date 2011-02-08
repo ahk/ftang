@@ -15,4 +15,4 @@ gem 'ruby-mp3info',
   :git => "git://github.com/ahk/ruby-mp3info.git"
 gem 'unicode'
 gem 'redis'
-gem 'SystemTimer'
+gem 'SystemTimer', :platforms => :ruby_18

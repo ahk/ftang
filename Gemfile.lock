@@ -13,7 +13,7 @@ GIT
 GEM
   remote: http://rubygems.org/
   specs:
-    SystemTimer (1.2)
+    SystemTimer (1.2.2)
     daemons (1.1.0)
     eventmachine (0.12.10)
     haml (3.0.21)
@@ -21,7 +21,7 @@ GEM
     pow (0.2.3)
     rack (1.2.1)
     rack-environment (1.2.0)
-    redis (2.0.11)
+    redis (2.1.1)
     sinatra (1.0)
       rack (>= 1.0)
     thin (1.2.7)
