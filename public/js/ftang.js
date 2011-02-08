@@ -1,33 +1,19 @@
-// documentation for this version of jplayer: http://www.happyworm.com/jquery/jplayer/0.2.5/developer-guide.htm
 $(function() {
 // controls for the player and the playlist
   var FTANGPlayer = function() { // called inline
     
     var playlist = [];
     var playItem = 0;
-    var jplayer = $("#jquery_jplayer");
-    
+    var jplayer = $("#jquery_jplayer_1");
+
     var public_methods = { // public interface object
       initJPlayer: function() {
         jplayer.jPlayer({
           ready: function() { FTANGPlayer.loadPlaylist(true); }, 
           oggSupport: false,
           swfPath: 'js',
+          ended: function() {FTANGPlayer.playListNext();}
         })
-        .jPlayer('onProgressChange', function(loadPercent, playedPercentRelative, playedPercentAbsolute, playedTime, totalTime) {
-          var myPlayedTime = new Date(playedTime);
-          var ptMin = (myPlayedTime.getUTCMinutes() < 10) ? "0" + myPlayedTime.getUTCMinutes() : myPlayedTime.getUTCMinutes();
-          var ptSec = (myPlayedTime.getUTCSeconds() < 10) ? "0" + myPlayedTime.getUTCSeconds() : myPlayedTime.getUTCSeconds();
-          $("#play_time").text(ptMin+":"+ptSec);
-
-          var myTotalTime = new Date(totalTime);
-          var ttMin = (myTotalTime.getUTCMinutes() < 10) ? "0" + myTotalTime.getUTCMinutes() : myTotalTime.getUTCMinutes();
-          var ttSec = (myTotalTime.getUTCSeconds() < 10) ? "0" + myTotalTime.getUTCSeconds() : myTotalTime.getUTCSeconds();
-          $("#total_time").text(ttMin+":"+ttSec);
-        })
-        .jPlayer('onSoundComplete', function() {
-          FTANGPlayer.playListNext();
-        });
       },
 
       loadPlaylist: function(updatePlayingFile) {
@@ -54,7 +40,7 @@ $(function() {
 
       playListConfig: function(index) {
         if (null == index) {
-          jplayer.jPlayer('setFile', null);
+          jplayer.jPlayer('setMedia', null);
           $("playlist_current").removeClass("playlist_current");
           return
         }
@@ -62,7 +48,8 @@ $(function() {
         $("#playlist_item_"+index).addClass("playlist_current");
         playItem = index;
         
-        jplayer.jPlayer('setFile', playlist[playItem].mp3);
+        jplayer.jPlayer('setMedia', {mp3: playlist[playItem].mp3} );
+        jplayer.jPlayer('play');
       },
 
       playListChange: function(index) {

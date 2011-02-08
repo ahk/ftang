@@ -15,7 +15,7 @@ class FTANG < Sinatra::Base
     set :views, Proc.new { File.join(root, "views") }
     set :public, Proc.new { File.join(root, "public") }
     set :database, Proc.new { @database ||= MusicCache::Database.new}
-    set :collection_name, 'test'
+    set :collection_name, 'music'
     # I suggest symlinking this
     set :music_dir, Proc.new { File.join(public, 'music')}
     enable :logging

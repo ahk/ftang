@@ -21,38 +21,45 @@
         FTANG!
       #header_artist
         %span
-          >
+          &gt;
         %h1
       #header_album
         %span
-          >
+          &gt;
         %h1
       #toggle_playlist
         %span= "toggle playlist"
-      #jquery_jplayer
-      #player_container
-        %ul#player_controls
-          %li#jplayer_play
-            play
-          %li#jplayer_pause
-            pause
-          %li#jplayer_stop
-            stop
-          %li#jplayer_volume_min
-            min volume
-          %li#jplayer_volume_max
-            max volume
-          %li#ctrl_prev
-            previous
-          %li#ctrl_next
-            next
-        #play_time
-        #total_time
-        #player_progress
-          #jplayer_load_bar
-            #jplayer_play_bar
-        #jplayer_volume_bar
-          #jplayer_volume_bar_value
+      #jquery_jplayer_1.jp-jplayer
+      .jp-audio
+        .jp-type-single
+          #jp_interface_1.jp-interface
+            %ul.jp-controls
+              %li
+                %a.jp-play{:href => "#"}
+                  play
+              %li
+                %a.jp-pause{:href => "#"}
+                  pause
+              %li
+                %a.jp-stop{:href => "#"}
+                  stop
+              %li
+                %a.jp-mute{:href => "#"}
+                  mute
+              %li
+                %a.jp-unmute{:href => "#"}
+                  unmute
+              %li#ctrl_prev
+                previous
+              %li#ctrl_next
+                next
+            .jp-current-time
+            .jp-duration
+            .jp-progress
+              .jp-seek-bar
+                .jp-play-bar
+            .jp-volume-bar
+              .jp-volume-bar-value
     #content
     #playlist
       #playlist_list
